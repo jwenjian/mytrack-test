@@ -17,14 +17,20 @@
             <q-input
               outlined
               v-model="dialog.create.model.title"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Title is required']"
             />
             <em class="form-label">Description (optional)</em>
-            <q-editor v-model="dialog.create.model.description" min-height="5rem" max-height="15rem" />
+            <q-editor
+              v-model="dialog.create.model.description"
+              min-height="5rem"
+              max-height="15rem"
+            />
           </q-form>
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn color="primary" label="Create" @click="onCreate"/>
+          <q-btn color="primary" label="Create" @click="onCreate" />
           <q-btn flat label="Close" v-close-popup />
         </q-card-actions>
       </q-card>
@@ -58,7 +64,20 @@ export default {
       this.$refs["form.create"]
         .validate()
         .then(valid => {
-          console.log(this.$q); // eslint-disable-line
+          if (!valid) {
+            return;
+          }
+          let taskTable = this.$db.getSchema().table("task");
+          let row = taskTable.createRow({
+            title: this.dialog.create.model.title,
+            description: this.dialog.create.model.description,
+            create_time: new Date()
+          });
+          this.$db
+            .insertOrReplace()
+            .into(taskTable)
+            .values([row])
+            .exec();
           this.$q.notify(JSON.stringify(this.dialog.create.model));
         })
         .catch(err => {
