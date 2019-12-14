@@ -11,20 +11,13 @@
           aria-label="Menu"
         />
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+        <q-toolbar-title>Quasar App</q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-2"
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-2">
       <q-list>
         <q-item-label header>Essential Links</q-item-label>
         <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
@@ -86,18 +79,24 @@
 
     <q-page-container>
       <router-view />
+      <q-page-sticky position="bottom-right" :offset="[18, 18]">
+        <q-fab icon="add" direction="up" color="accent">
+          <q-fab-action @click="onClick" color="primary" icon="person_add" />
+          <q-fab-action @click="onClick" color="primary" icon="mail" />
+        </q-fab>
+      </q-page-sticky>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 export default {
-  name: 'MyLayout',
+  name: "MyLayout",
 
-  data () {
+  data() {
     return {
       leftDrawerOpen: false
-    }
+    };
   }
-}
+};
 </script>
