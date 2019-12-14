@@ -3,7 +3,7 @@
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn fab icon="add" color="accent" @click="showTaskCreateDialog" />
     </q-page-sticky>
-    <q-table title="Tasks" :data="data" :columns="columns" row-key="name" />
+    <q-table title="Tasks" :data="data" :columns="columns" row-key="id" />
     <!-- dialogs -->
     <q-dialog v-model="dialog.create.show">
       <q-card style="width: 700px; max-width: 80vw;">
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { Order } from "lovefield";
+
 export default {
   name: "task",
   data() {
@@ -53,7 +55,37 @@ export default {
         }
       },
       data: [],
-      columns: []
+      columns: [
+        {
+          name: "id",
+          label: "ID",
+          required: true,
+          field: "id",
+          sortable: true,
+          align: "left"
+        },
+        {
+          name: "title",
+          label: "Title",
+          required: true,
+          field: "title",
+          align: "left"
+        },
+        {
+          name: "description",
+          label: "Description",
+          required: true,
+          field: "description",
+          align: "left"
+        },
+        {
+          name: "create_time",
+          label: "Create time",
+          required: true,
+          align: "left",
+          field: row => "" + row.create_time
+        }
+      ]
     };
   },
   methods: {
@@ -77,13 +109,51 @@ export default {
             .insertOrReplace()
             .into(taskTable)
             .values([row])
-            .exec();
-          this.$q.notify(JSON.stringify(this.dialog.create.model));
+            .exec()
+            .then(rows => {
+              this.$q.notify({
+                color: "green",
+                message: "Success!"
+              });
+              this.dialog.create.model.title = null;
+              this.dialog.create.model.description = "";
+              this.getTableData();
+              this.dialog.create.show = false;
+            })
+            .catch(err => {
+              this.$q.notify({
+                color: "red",
+                message:
+                  "Create failed, detailed message: " + JSON.stringify(err)
+              });
+            });
         })
         .catch(err => {
           this.$q.notify("Invalid!" + err);
         });
+    },
+    getTableData() {
+      let taskTable = this.$db.getSchema().table("task");
+      this.$db
+        .select()
+        .from(taskTable)
+        .orderBy(taskTable.id, Order.DESC)
+        .exec()
+        .then(rows => {
+          this.data = rows;
+          console.log(rows);
+        })
+        .catch(err => {
+          this.$q.notify({
+            message:
+              "Error get tasks, detailed message: " + JSON.stringify(err),
+            color: "red"
+          });
+        });
     }
+  },
+  mounted() {
+    this.getTableData();
   }
 };
 </script>
