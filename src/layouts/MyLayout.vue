@@ -19,7 +19,7 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-2">
       <q-list padding class="text-primary">
-        <q-item clickable v-ripple to="/" active-class="text-red-14">
+        <q-item clickable v-ripple to="/dashboard" active-class="text-red-14">
           <q-item-section avatar>
             <q-icon name="dashboard" />
           </q-item-section>
@@ -35,7 +35,7 @@
           <q-item-section>Projects</q-item-section>
         </q-item>
 
-        <q-item clickable v-ripple to="/tasks">
+        <q-item clickable v-ripple to="/tasks" active-class="text-red-14">
           <q-item-section avatar>
             <q-icon name="check_box" />
           </q-item-section>
@@ -73,12 +73,6 @@
 
     <q-page-container>
       <router-view />
-      <q-page-sticky position="bottom-right" :offset="[18, 18]">
-        <q-fab icon="add" direction="up" color="accent">
-          <q-fab-action @click="onClick" color="primary" icon="person_add" />
-          <q-fab-action @click="onClick" color="primary" icon="mail" />
-        </q-fab>
-      </q-page-sticky>
     </q-page-container>
   </q-layout>
 </template>
