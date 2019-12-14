@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -13,66 +13,60 @@
 
         <q-toolbar-title>Quasar App</q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-avatar color="accent" text-color="white">WJ</q-avatar>
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-2">
-      <q-list>
-        <q-item-label header>Essential Links</q-item-label>
-        <q-item clickable tag="a" target="_blank" href="https://quasar.dev">
+      <q-list padding class="text-primary">
+        <q-item clickable v-ripple to="/" active-class="text-red-14">
           <q-item-section avatar>
-            <q-icon name="school" />
+            <q-icon name="dashboard" />
           </q-item-section>
-          <q-item-section>
-            <q-item-label>Docs</q-item-label>
-            <q-item-label caption>quasar.dev</q-item-label>
-          </q-item-section>
+
+          <q-item-section>Dashboard</q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://github.quasar.dev">
+
+        <q-item clickable v-ripple to="/projects">
           <q-item-section avatar>
-            <q-icon name="code" />
+            <q-icon name="work" />
           </q-item-section>
-          <q-item-section>
-            <q-item-label>Github</q-item-label>
-            <q-item-label caption>github.com/quasarframework</q-item-label>
-          </q-item-section>
+
+          <q-item-section>Projects</q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://chat.quasar.dev">
+
+        <q-item clickable v-ripple to="/tasks">
           <q-item-section avatar>
-            <q-icon name="chat" />
+            <q-icon name="check_box" />
           </q-item-section>
-          <q-item-section>
-            <q-item-label>Discord Chat Channel</q-item-label>
-            <q-item-label caption>chat.quasar.dev</q-item-label>
-          </q-item-section>
+
+          <q-item-section>Tasks</q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://forum.quasar.dev">
+
+        <q-separator spaced />
+
+        <q-item
+          clickable
+          v-ripple
+          to="/settings"
+        >
           <q-item-section avatar>
-            <q-icon name="record_voice_over" />
+            <q-icon name="settings" />
           </q-item-section>
-          <q-item-section>
-            <q-item-label>Forum</q-item-label>
-            <q-item-label caption>forum.quasar.dev</q-item-label>
-          </q-item-section>
+
+          <q-item-section>Settings</q-item-section>
         </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://twitter.quasar.dev">
+
+        <q-item
+          clickable
+          v-ripple
+          to="/help"
+        >
           <q-item-section avatar>
-            <q-icon name="rss_feed" />
+            <q-icon name="help" />
           </q-item-section>
-          <q-item-section>
-            <q-item-label>Twitter</q-item-label>
-            <q-item-label caption>@quasarframework</q-item-label>
-          </q-item-section>
-        </q-item>
-        <q-item clickable tag="a" target="_blank" href="https://facebook.quasar.dev">
-          <q-item-section avatar>
-            <q-icon name="public" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Facebook</q-item-label>
-            <q-item-label caption>@QuasarFramework</q-item-label>
-          </q-item-section>
+
+          <q-item-section>Help</q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
@@ -100,3 +94,6 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+</style>>
