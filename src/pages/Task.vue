@@ -11,7 +11,19 @@
       row-key="id"
       :pagination.sync="pagination"
       @request="getTableData"
-    />
+    >
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td auto-width :props="props" key="id">{{ props.row.id }}</q-td>
+          <q-td auto-width :props="props" key="title">{{ props.row.title }}</q-td>
+          <q-td auto-width :props="props" key="description">{{ props.row.description }}</q-td>
+          <q-td auto-width :props="props" key="create_time">{{ props.row.create_time }}</q-td>
+          <q-td auto-width :props="props" key="operation">
+            <q-btn round color="primary" icon="av_timer" size="sm" class="row-btn" />
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
     <!-- dialogs -->
     <q-dialog v-model="dialog.create.show">
       <q-card style="width: 700px; max-width: 80vw;">
@@ -92,6 +104,12 @@ export default {
           required: true,
           align: "left",
           field: row => "" + row.create_time
+        },
+        {
+          name: "operation",
+          label: "Operation",
+          required: true,
+          align: "left"
         }
       ],
       pagination: {
@@ -152,7 +170,7 @@ export default {
     },
     getTableData(queryObj) {
       if (queryObj && queryObj.pagination) {
-        this.pagination = queryObj.pagination
+        this.pagination = queryObj.pagination;
       }
       this.table.loading = true;
       let taskTable = this.$db.getSchema().table("task");
@@ -196,5 +214,8 @@ export default {
   display: block;
   margin-top: 1em;
   margin-bottom: 0.5em;
+}
+.row-btn {
+  margin-left: 0.5em;
 }
 </style>
