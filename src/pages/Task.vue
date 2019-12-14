@@ -3,7 +3,15 @@
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn fab icon="add" color="accent" @click="showTaskCreateDialog" />
     </q-page-sticky>
-    <q-table title="Tasks" :data="data" :columns="columns" row-key="id" />
+    <q-table
+      title="Tasks"
+      :loading="table.loading"
+      :data="data"
+      :columns="columns"
+      row-key="id"
+      :pagination.sync="pagination"
+      @request="getTableData"
+    />
     <!-- dialogs -->
     <q-dialog v-model="dialog.create.show">
       <q-card style="width: 700px; max-width: 80vw;">
@@ -39,7 +47,7 @@
 </template>
 
 <script>
-import { Order } from "lovefield";
+import { fn, Order } from "lovefield";
 
 export default {
   name: "task",
@@ -85,7 +93,17 @@ export default {
           align: "left",
           field: row => "" + row.create_time
         }
-      ]
+      ],
+      pagination: {
+        sortBy: "id",
+        descending: true,
+        page: 1,
+        rowsPerPage: 3,
+        rowsNumber: 0
+      },
+      table: {
+        loading: true
+      }
     };
   },
   methods: {
@@ -132,21 +150,36 @@ export default {
           this.$q.notify("Invalid!" + err);
         });
     },
-    getTableData() {
+    getTableData(queryObj) {
+      if (queryObj && queryObj.pagination) {
+        this.pagination = queryObj.pagination
+      }
+      this.table.loading = true;
       let taskTable = this.$db.getSchema().table("task");
-      this.$db
-        .select()
-        .from(taskTable)
-        .orderBy(taskTable.id, Order.DESC)
-        .exec()
-        .then(rows => {
-          this.data = rows;
-          console.log(rows);
+      Promise.all([
+        this.$db
+          .select(fn.count(taskTable.id))
+          .from(taskTable)
+          .exec(),
+        this.$db
+          .select()
+          .from(taskTable)
+          .orderBy(taskTable.id, Order.DESC)
+          .skip((this.pagination.page - 1) * this.pagination.rowsPerPage)
+          .limit(this.pagination.rowsPerPage)
+          .exec()
+      ])
+        .then(result => {
+          let countResult = result[0];
+          let dataResult = result[1];
+          this.pagination.rowsNumber = countResult[0]["COUNT(id)"];
+          this.data = dataResult;
+          this.table.loading = false;
         })
         .catch(err => {
           this.$q.notify({
             message:
-              "Error get tasks, detailed message: " + JSON.stringify(err),
+              "Error get tasks, detailed error message: " + JSON.stringify(err),
             color: "red"
           });
         });
