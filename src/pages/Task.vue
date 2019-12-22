@@ -17,6 +17,11 @@
           <q-td auto-width :props="props" key="id">{{ props.row.id }}</q-td>
           <q-td auto-width :props="props" key="title">{{ props.row.title }}</q-td>
           <q-td auto-width :props="props" key="description">{{ props.row.description }}</q-td>
+          <q-td
+            auto-width
+            :props="props"
+            key="total_spent_minute"
+          >{{ props.row.total_spent_minute | minutes2readable }}</q-td>
           <q-td auto-width :props="props" key="create_time">{{ props.row.create_time }}</q-td>
           <q-td auto-width :props="props" key="operation">
             <q-btn
@@ -189,6 +194,13 @@ export default {
           align: "left"
         },
         {
+          name: "total_spent_minute",
+          label: "Total spent",
+          required: true,
+          field: "total_spent_minute",
+          align: "left"
+        },
+        {
           name: "create_time",
           label: "Create time",
           required: true,
@@ -213,6 +225,14 @@ export default {
         loading: true
       }
     };
+  },
+  filters: {
+    minutes2readable: function(val) {
+      if (val <= 0) {
+        return "0h0m";
+      }
+      return `${parseInt(val / 60)}h${val % 60}m`;
+    }
   },
   methods: {
     parseMinitues(timeExression) {
