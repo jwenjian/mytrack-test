@@ -136,17 +136,43 @@ export default {
             return;
           }
           let taskTable = this.$db.getSchema().table("task");
-          let row = taskTable.createRow({
-            title: this.dialog.create.model.title,
-            description: this.dialog.create.model.description,
-            create_time: new Date()
-          });
-          this.$db
-            .insertOrReplace()
-            .into(taskTable)
-            .values([row])
-            .exec()
-            .then(rows => {
+          let activityTable = this.$db.getSchema().table("activity");
+
+          let tx = this.$db.createTransaction();
+
+          tx.begin([taskTable, activityTable])
+            .then(() => {
+              let row = taskTable.createRow({
+                title: this.dialog.create.model.title,
+                description: this.dialog.create.model.description,
+                total_spent_minute: 0,
+                create_time: new Date()
+              });
+              let insertTaskQuery = this.$db
+                .insertOrReplace()
+                .into(taskTable)
+                .values([row]);
+
+              return tx.attach(insertTaskQuery);
+            })
+            .then(results => {
+              let activity = activityTable.createRow({
+                type: 100,
+                title: "Create a task",
+                subtitle: this.dialog.create.model.title,
+                body: this.dialog.create.model.description,
+                create_time: new Date()
+              });
+              let insertActivityQuery = this.$db
+                .insertOrReplace()
+                .into(activityTable)
+                .values([activity]);
+              return tx.attach(insertActivityQuery);
+            })
+            .then(() => {
+              return tx.commit();
+            })
+            .then(() => {
               this.$q.notify({
                 color: "green",
                 message: "Success!"
