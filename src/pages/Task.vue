@@ -158,7 +158,7 @@ export default {
                 if (!result) {
                   return "30m - 30 Minitues; 1h - 1 Hour; 1h30m - 1 Hour 30 Minutes.";
                 }
-                return true
+                return true;
               }
             ]
           }
@@ -215,7 +215,98 @@ export default {
     };
   },
   methods: {
-    onTrack() {},
+    parseMinitues(timeExression) {
+      let input = timeExression.toLowerCase();
+      let result = 0;
+      // 1h
+      if (input.indexOf("h") > 0 && input.indexOf("m") < 0) {
+        result = Number(input.split("h")[0]) * 60;
+      } else if (input.indexOf("h") < 0 && input.indexOf("m") > 0) {
+        // 30m
+        result = Number(input.split("m")[0]);
+      } else {
+        // 1h30m
+        let hourStr = input.substring(0, input.indexOf("h"));
+        let minutesStr = input.substring(
+          input.indexOf("h") + 1,
+          input.indexOf("m")
+        );
+        result = Number(hourStr) * 60 + Number(minutesStr);
+      }
+      return result;
+    },
+    onTrack() {
+      this.$refs["form.track"].validate().then(valid => {
+        if (!valid) {
+          return;
+        }
+        let minutes = this.parseMinitues(this.dialog.track.model.timeExression);
+        let taskTable = this.$db.getSchema().table("task");
+        let activityTable = this.$db.getSchema().table("activity");
+        let spentTimeItemTable = this.$db.getSchema().table("spent_time_item");
+        let tx = this.$db.createTransaction();
+        tx.begin([taskTable, activityTable, spentTimeItemTable])
+          .then(() => {
+            // count up total spent time of task
+            let q = this.$db
+              .update(taskTable)
+              .set(
+                taskTable.total_spent_minute,
+                this.dialog.track.info.task.total_spent_minute + minutes
+              )
+              .where(taskTable.id.eq(this.dialog.track.info.task.id));
+            return tx.attach(q);
+          })
+          .then(result => {
+            // insert spent time item
+            let row = spentTimeItemTable.createRow({
+              task_id: this.dialog.track.info.task.id,
+              description: this.dialog.track.model.description,
+              create_time: new Date(),
+              spent_minute: minutes
+            });
+            let q = this.$db
+              .insertOrReplace()
+              .into(spentTimeItemTable)
+              .values([row]);
+            return tx.attach(q);
+          })
+          .then(result => {
+            // 101 - new spent time on task
+            let row = activityTable.createRow({
+              type: 101,
+              title: "Spent time on task",
+              subtitle: `Sepnt ${this.dialog.track.model.timeExression} on task: ${this.dialog.track.info.task.title}.`,
+              body: this.dialog.track.model.description,
+              create_time: new Date()
+            });
+            let q = this.$db
+              .insertOrReplace()
+              .into(activityTable)
+              .values([row]);
+            return tx.attach(q);
+          })
+          .then(() => {
+            return tx.commit();
+          })
+          .then(() => {
+            this.$q.notify({
+              color: "green",
+              message: "Success!"
+            });
+            this.dialog.track.model.dateStr = null;
+            this.dialog.track.model.timeExression = "";
+            this.getTableData();
+            this.dialog.track.show = false;
+          })
+          .catch(err => {
+            this.$q.notify({
+              color: "red",
+              message: "Create failed, detailed message: " + JSON.stringify(err)
+            });
+          });
+      });
+    },
     showTimeTrackDialog(row) {
       this.dialog.track.model.dateStr = formatCurrentDate();
       this.dialog.track.info.task = row;
