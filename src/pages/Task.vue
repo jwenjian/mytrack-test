@@ -19,12 +19,20 @@
           <q-td auto-width :props="props" key="description">{{ props.row.description }}</q-td>
           <q-td auto-width :props="props" key="create_time">{{ props.row.create_time }}</q-td>
           <q-td auto-width :props="props" key="operation">
-            <q-btn round color="primary" icon="av_timer" size="sm" class="row-btn" />
+            <q-btn
+              round
+              color="primary"
+              icon="av_timer"
+              size="sm"
+              class="row-btn"
+              @click="showTimeTrackDialog(props.row)"
+            />
           </q-td>
         </q-tr>
       </template>
     </q-table>
     <!-- dialogs -->
+    <!-- task create dialog -->
     <q-dialog v-model="dialog.create.show">
       <q-card style="width: 700px; max-width: 80vw;">
         <q-card-section>
@@ -55,11 +63,56 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- time tracking dialog -->
+    <q-dialog v-model="dialog.track.show">
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section>
+          <div class="text-h6">Time tracking on task: {{dialog.track.info.task.title}}</div>
+        </q-card-section>
+
+        <q-card-section>
+          <q-form @submit="onTrack" ref="form.track">
+            <em class="form-label">Date *</em>
+            <q-input outlined v-model="dialog.track.model.dateStr" mask="date" :rules="['date']">
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-date
+                      v-model="dialog.track.model.dateStr"
+                      @input="() => $refs.qDateProxy.hide()"
+                    />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+            <em class="form-label">Time *</em>
+            <q-input
+              outlined
+              v-model="dialog.track.model.timeExression"
+              lazy-rules
+              :rules="dialog.track.rule.timeExression"
+            />
+            <em class="form-label">Description (optional)</em>
+            <q-editor
+              v-model="dialog.create.model.description"
+              min-height="5rem"
+              max-height="15rem"
+            />
+          </q-form>
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn color="primary" label="Track" @click="onTrack" />
+          <q-btn flat label="Close" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import { fn, Order } from "lovefield";
+import { formatCurrentDate } from "../util/common";
 
 export default {
   name: "task",
@@ -71,6 +124,43 @@ export default {
           model: {
             title: null,
             description: ""
+          }
+        },
+        track: {
+          show: false,
+          info: {
+            task: {
+              id: null,
+              title: "",
+              description: "",
+              create_time: null
+            }
+          },
+          model: {
+            dateStr: "",
+            timeExression: null,
+            description: ""
+          },
+          rule: {
+            timeExression: [
+              val => {
+                let result = false;
+                if (val && val.length > 0) {
+                  // case insensitive
+                  let r = new RegExp(
+                    /^([\d]{1,2}[h]|[\d]{1,2}[m]|[\d]{1,2}[h][\d]{1,2}[m])$/,
+                    "i"
+                  );
+                  if (r.test(val)) {
+                    result = true;
+                  }
+                }
+                if (!result) {
+                  return "30m - 30 Minitues; 1h - 1 Hour; 1h30m - 1 Hour 30 Minutes.";
+                }
+                return true
+              }
+            ]
           }
         }
       },
@@ -125,6 +215,12 @@ export default {
     };
   },
   methods: {
+    onTrack() {},
+    showTimeTrackDialog(row) {
+      this.dialog.track.model.dateStr = formatCurrentDate();
+      this.dialog.track.info.task = row;
+      this.dialog.track.show = true;
+    },
     showTaskCreateDialog() {
       this.dialog.create.show = !this.dialog.create.show;
     },
