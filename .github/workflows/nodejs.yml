@@ -19,7 +19,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: npm install, build
       run: |
-        npm install quasar -g
+        npm install -g @quasar/cli
         npm install
         quasar build -m pwa
         mkdir docs
