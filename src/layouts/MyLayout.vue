@@ -27,12 +27,12 @@
           <q-item-section>Dashboard</q-item-section>
         </q-item>
 
-        <q-item clickable v-ripple to="/projects">
+        <q-item clickable v-ripple to="/activities" active-class="text-red-14">
           <q-item-section avatar>
-            <q-icon name="work" />
+            <q-icon name="timeline" />
           </q-item-section>
 
-          <q-item-section>Projects</q-item-section>
+          <q-item-section>Activity</q-item-section>
         </q-item>
 
         <q-item clickable v-ripple to="/tasks" active-class="text-red-14">
@@ -40,7 +40,7 @@
             <q-icon name="check_box" />
           </q-item-section>
 
-          <q-item-section>Tasks</q-item-section>
+          <q-item-section>Task</q-item-section>
         </q-item>
 
         <q-separator spaced />

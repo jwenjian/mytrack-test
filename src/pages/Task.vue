@@ -99,7 +99,7 @@
             />
             <em class="form-label">Description (optional)</em>
             <q-editor
-              v-model="dialog.create.model.description"
+              v-model="dialog.track.model.description"
               min-height="5rem"
               max-height="15rem"
             />
@@ -296,7 +296,7 @@ export default {
             let row = activityTable.createRow({
               type: 101,
               title: "Spent time on task",
-              subtitle: `Sepnt ${this.dialog.track.model.timeExression} on task: ${this.dialog.track.info.task.title}.`,
+              subtitle: `Spent ${this.dialog.track.model.timeExression} on task: ${this.dialog.track.info.task.title}.`,
               body: this.dialog.track.model.description,
               create_time: new Date()
             });
