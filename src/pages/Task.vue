@@ -5,6 +5,7 @@
     </q-page-sticky>
     <q-table
       title="Tasks"
+      :wrap-cells="true"
       :loading="table.loading"
       :data="data"
       :columns="columns"
