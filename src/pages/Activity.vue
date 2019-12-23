@@ -7,6 +7,7 @@
           :title="i.title"
           :subtitle="i.create_time.toLocaleDateString() + i.create_time.toLocaleTimeString()"
           :icon="i.type | type2icon"
+          :color="i.type | type2color"
           :key="i.id"
         >
           <p class="item-subtitle">{{ i.subtitle }}</p>
@@ -35,6 +36,15 @@ export default {
         return 'av_timer'
       }
       return 'timeline'
+    },
+    type2color: function(type) {
+      if (type === 100) {
+        return 'orange'
+      }
+      if (type === 101) {
+        return 'teal'
+      }
+      return 'secondary'
     }
   },
   methods: {

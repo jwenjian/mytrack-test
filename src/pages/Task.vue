@@ -296,7 +296,7 @@ export default {
             let row = activityTable.createRow({
               type: 101,
               title: "Spent time on task",
-              subtitle: `Spent ${this.dialog.track.model.timeExression} on task: ${this.dialog.track.info.task.title}.`,
+              subtitle: `${this.dialog.track.model.timeExression} on task: ${this.dialog.track.info.task.title}`,
               body: this.dialog.track.model.description,
               create_time: new Date()
             });
