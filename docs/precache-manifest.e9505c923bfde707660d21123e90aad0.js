@@ -1,10 +1,14 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "48404a23fb1890e30719",
-    "url": "css/67a10042.6ad3a908.css"
+    "revision": "ab22c27448ce23595675",
+    "url": "css/695f6304.6ad3a908.css"
   },
   {
-    "revision": "4f6349e83517f61d69c9",
+    "revision": "9f19225b5587af5f0e3c",
+    "url": "css/96a6dd24.cc8d3bd7.css"
+  },
+  {
+    "revision": "18c010f7fb5674e1c9ca",
     "url": "css/app.2f77557c.css"
   },
   {
@@ -44,32 +48,36 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "img/quasar-logo-full.c3e88651.svg"
   },
   {
-    "revision": "cbaf997102ec5b778f6d2154847b9965",
+    "revision": "572e1a1aed7a9a88feefbf6a6882b993",
     "url": "index.html"
   },
   {
-    "revision": "38caab1d37f7d473b32c",
-    "url": "js/2d22c0ff.0580db19.js"
+    "revision": "88a665327eee82be6aef",
+    "url": "js/2d22c0ff.82d78dda.js"
   },
   {
-    "revision": "48404a23fb1890e30719",
-    "url": "js/67a10042.8eb138f9.js"
+    "revision": "ab22c27448ce23595675",
+    "url": "js/695f6304.02e9ed79.js"
   },
   {
     "revision": "a1baf55ea9df7d6b3236",
     "url": "js/7089f5c5.f0e17880.js"
   },
   {
-    "revision": "4f6349e83517f61d69c9",
-    "url": "js/app.71012d58.js"
+    "revision": "9f19225b5587af5f0e3c",
+    "url": "js/96a6dd24.c484ef0f.js"
+  },
+  {
+    "revision": "18c010f7fb5674e1c9ca",
+    "url": "js/app.dc778c5d.js"
   },
   {
     "revision": "4561c955b9495eb3e66d",
     "url": "js/f73ee9c4.3b70a63e.js"
   },
   {
-    "revision": "bee8a79a336466df6a21",
-    "url": "js/vendor.632317b9.js"
+    "revision": "59573c347c04456e79ac",
+    "url": "js/vendor.20b8f874.js"
   },
   {
     "revision": "c5394e871cfa492a62ebc1515a30a95b",
