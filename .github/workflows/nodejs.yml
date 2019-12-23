@@ -22,8 +22,6 @@ jobs:
         npm install -g @quasar/cli
         npm install
         quasar build -m pwa
-        mkdir -p docs
-        cp -r dist/pwa/* docs/
     - name: git add, commit, push
       run: |
         git status
